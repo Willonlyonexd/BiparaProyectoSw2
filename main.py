@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from kpi import ventas
+from kpi import ventas, productos
 
 app = FastAPI(title="KPIs Ecommerce")
 app.include_router(ventas.router)
+app.include_router(productos.router)
 
 if __name__ == "__main__":
     import uvicorn

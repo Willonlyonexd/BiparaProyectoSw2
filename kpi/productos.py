@@ -3,42 +3,30 @@ from etl.transformproductos import *
 
 router = APIRouter(prefix="/kpi/productos", tags=["Productos"])
 
-@router.get("/inventario_actual")
-def endpoint_inventario_actual():
-    """Inventario actual por producto y variedad."""
-    return inventario_actual()
+@router.get("/distribucion-por-categoria")
+def kpi_distribucion_categoria(tenant: str = Query(...)):
+    return distribucion_por_categoria(tenant)
 
-@router.get("/sin_stock")
-def endpoint_productos_sin_stock():
-    """Productos sin stock."""
-    return productos_sin_stock()
+@router.get("/stock-por-producto")
+def kpi_stock_producto(tenant: str = Query(...)):
+    return stock_actual_por_producto(tenant)
 
-@router.get("/valor_inventario")
-def endpoint_valor_inventario():
-    """Valor total del inventario."""
-    return {"valor_inventario": valor_total_inventario()}
+@router.get("/stock-por-categoria")
+def kpi_stock_categoria(tenant: str = Query(...)):
+    return stock_actual_por_categoria(tenant)
 
-@router.get("/variedades_por_producto")
-def endpoint_variedades_por_producto():
-    """Cantidad de variedades por producto."""
-    return variedades_por_producto()
+@router.get("/stock-por-almacen")
+def kpi_stock_almacen(tenant: str = Query(...)):
+    return stock_por_almacen(tenant)
 
-@router.get("/activos_inactivos")
-def endpoint_productos_activos_inactivos():
-    """Cantidad de productos activos/inactivos."""
-    return productos_activos_inactivos()
+@router.get("/productos-sin-stock")
+def kpi_productos_sin_stock(tenant: str = Query(...)):
+    return productos_sin_stock(tenant)
 
-@router.get("/recien_agregados")
-def endpoint_productos_recien_agregados(limit: int = 10):
-    """Últimos productos agregados."""
-    return productos_recien_agregados(limit)
+@router.get("/productos-recien-agregados")
+def kpi_productos_recientes(limit: int = 10, tenant: str = Query(...)):
+    return productos_recien_agregados(limit, tenant)
 
-@router.get("/proximos_a_agotarse")
-def endpoint_productos_proximos_a_agotarse(umbral: int = 5):
-    """Productos próximos a agotarse (stock bajo)."""
-    return productos_proximos_a_agotarse(umbral)
-
-@router.get("/por_categoria")
-def endpoint_productos_por_categoria():
-    """Cantidad de productos por categoría."""
-    return productos_por_categoria()
+@router.get("/productos-sobre-stock")
+def kpi_productos_sobre_stock(umbral: int = 100, tenant: str = Query(...)):
+    return productos_sobre_stock(umbral, tenant)

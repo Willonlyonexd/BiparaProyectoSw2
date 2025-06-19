@@ -3,126 +3,202 @@ from bson import ObjectId
 
 db = get_mongo_db()
 
-def inventario_actual():
-    """Inventario actual por producto y variedad"""
-    pipeline = [
-        {
-            "$group": {
-                "_id": {"producto": "$producto", "nombre_variedad": "$nombre"},
-                "stock": {"$sum": "$stock"}
-            }
-        }
-    ]
-    res = list(db.producto_variedads.aggregate(pipeline))
-    # Enriquecer nombre producto
-    ids = [ObjectId(r["_id"]["producto"]) for r in res]
-    productos = {str(p["_id"]): p for p in db.productos.find({"_id": {"$in": ids}})}
-    for r in res:
-        prod = productos.get(str(r["_id"]["producto"]))
-        r["producto_nombre"] = prod["titulo"] if prod else "Desconocido"
-    return res
+def fix_objectids(obj):
+    """Recursively converts all ObjectId instances to strings for JSON serialization."""
+    if isinstance(obj, list):
+        return [fix_objectids(i) for i in obj]
+    if isinstance(obj, dict):
+        return {k: fix_objectids(v) for k, v in obj.items()}
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    return obj
 
-def productos_sin_stock():
-    """Productos sin stock (todas sus variedades en 0)"""
-    pipeline = [
-        {
-            "$group": {
-                "_id": "$producto",
-                "stock_total": {"$sum": "$stock"}
-            }
-        },
-        {"$match": {"stock_total": {"$lte": 0}}},
-    ]
-    res = list(db.producto_variedads.aggregate(pipeline))
-    ids = [ObjectId(r["_id"]) for r in res]
-    productos = list(db.productos.find({"_id": {"$in": ids}}))
-    return [{"producto_id": str(p["_id"]), "titulo": p["titulo"]} for p in productos]
+def distribucion_por_categoria(tenant=None):
+    pipeline = []
+    match = {}
+    if tenant:
+        try:
+            match["tenant"] = ObjectId(tenant)
+        except Exception:
+            match["tenant"] = tenant
+    if match:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$group": {"_id": "$categoria", "cantidad": {"$sum": 1}}},
+        {"$lookup": {
+            "from": "categorias",
+            "localField": "_id",
+            "foreignField": "_id",
+            "as": "categoria"
+        }},
+        {"$unwind": "$categoria"},
+        {"$project": {
+            "_id": 0,
+            "categoria_id": "$_id",
+            "categoria": "$categoria.titulo",
+            "cantidad": 1
+        }}
+    ])
+    return fix_objectids(list(db.productos.aggregate(pipeline)))
 
-def valor_total_inventario():
-    """Valor total del inventario (precio_venta * stock, suma de todas las variedades)"""
-    pipeline = [
-        {
-            "$project": {
-                "valor": {"$multiply": ["$stock", "$precio_venta"]}
-            }
-        },
-        {
-            "$group": {
-                "_id": None,
-                "valor_inventario": {"$sum": "$valor"}
-            }
-        }
-    ]
-    res = list(db.producto_variedads.aggregate(pipeline))
-    return res[0]["valor_inventario"] if res else 0
-
-def variedades_por_producto():
-    """Cantidad de variedades por producto"""
-    pipeline = [
-        {
-            "$group": {
-                "_id": "$producto",
-                "variedades": {"$sum": 1}
-            }
-        }
-    ]
-    res = list(db.producto_variedads.aggregate(pipeline))
-    ids = [ObjectId(r["_id"]) for r in res]
-    productos = {str(p["_id"]): p for p in db.productos.find({"_id": {"$in": ids}})}
-    for r in res:
-        prod = productos.get(str(r["_id"]))
-        r["producto_nombre"] = prod["titulo"] if prod else "Desconocido"
-    return res
-
-def productos_activos_inactivos():
-    """Cantidad de productos activos/inactivos"""
-    pipeline = [
-        {
-            "$group": {
-                "_id": "$activo",
-                "cantidad": {"$sum": 1}
-            }
-        }
-    ]
-    return list(db.productos.aggregate(pipeline))
-
-def productos_recien_agregados(limit=10):
-    """Últimos productos agregados"""
-    res = list(db.productos.find({}).sort("createdAT", -1).limit(limit))
-    return [{"producto_id": str(p["_id"]), "titulo": p["titulo"], "createdAT": p["createdAT"]} for p in res]
-
-def productos_proximos_a_agotarse(umbral=5):
-    """Productos con stock de alguna variedad por debajo del umbral"""
-    pipeline = [
-        {"$match": {"stock": {"$lt": umbral}}},
-        {
-            "$lookup": {
-                "from": "productos",
-                "localField": "producto",
-                "foreignField": "_id",
-                "as": "producto"
-            }
-        },
+def stock_actual_por_producto(tenant=None):
+    pipeline = []
+    match = {}
+    if tenant:
+        try:
+            match["tenant"] = ObjectId(tenant)
+        except Exception:
+            match["tenant"] = tenant
+    if match:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$group": {"_id": "$producto", "stock_total": {"$sum": "$cantidad"}}},
+        {"$lookup": {
+            "from": "productos",
+            "localField": "_id",
+            "foreignField": "_id",
+            "as": "producto"
+        }},
         {"$unwind": "$producto"},
-        {
-            "$project": {
-                "producto_id": "$producto._id",
-                "titulo": "$producto.titulo",
-                "nombre_variedad": "$nombre",
-                "stock": 1
-            }
-        }
-    ]
-    return list(db.producto_variedads.aggregate(pipeline))
+        {"$project": {
+            "_id": 0,
+            "producto_id": "$_id",
+            "producto": "$producto.titulo",
+            "stock_total": 1
+        }}
+    ])
+    return fix_objectids(list(db.producto_variedads.aggregate(pipeline)))
 
-def productos_por_categoria():
-    """Cantidad de productos por categoría"""
-    pipeline = [
-        {
-            "$group": {
-                "_id": "$categoria",
-                "cantidad": {"$sum": 1}
-            }
-        }
-    ]
-    return list(db.productos.aggregate(pipeline))
+def stock_actual_por_categoria(tenant=None):
+    pipeline = []
+    match = {}
+    if tenant:
+        try:
+            match["tenant"] = ObjectId(tenant)
+        except Exception:
+            match["tenant"] = tenant
+    if match:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$lookup": {
+            "from": "productos",
+            "localField": "producto",
+            "foreignField": "_id",
+            "as": "producto"
+        }},
+        {"$unwind": "$producto"},
+        {"$group": {
+            "_id": "$producto.categoria",
+            "stock_total": {"$sum": "$cantidad"}
+        }},
+        {"$lookup": {
+            "from": "categorias",
+            "localField": "_id",
+            "foreignField": "_id",
+            "as": "categoria"
+        }},
+        {"$unwind": "$categoria"},
+        {"$project": {
+            "_id": 0,
+            "categoria_id": "$_id",
+            "categoria": "$categoria.titulo",
+            "stock_total": 1
+        }}
+    ])
+    return fix_objectids(list(db.producto_variedads.aggregate(pipeline)))
+
+def stock_por_almacen(tenant=None):
+    pipeline = []
+    match = {}
+    if tenant:
+        try:
+            match["tenant"] = ObjectId(tenant)
+        except Exception:
+            match["tenant"] = tenant
+    if match:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$group": {"_id": "$almacen", "stock_total": {"$sum": "$cantidad"}}},
+        {"$lookup": {
+            "from": "almacens",
+            "localField": "_id",
+            "foreignField": "_id",
+            "as": "almacen"
+        }},
+        {"$unwind": "$almacen"},
+        {"$project": {
+            "_id": 0,
+            "almacen_id": "$_id",
+            "almacen": "$almacen.titulo",
+            "stock_total": 1
+        }}
+    ])
+    return fix_objectids(list(db.producto_variedads.aggregate(pipeline)))
+
+def productos_sin_stock(tenant=None):
+    pipeline = []
+    match = {}
+    if tenant:
+        try:
+            match["tenant"] = ObjectId(tenant)
+        except Exception:
+            match["tenant"] = tenant
+    if match:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$group": {"_id": "$producto", "stock_total": {"$sum": "$cantidad"}}},
+        {"$match": {"stock_total": {"$lte": 0}}},
+        {"$lookup": {
+            "from": "productos",
+            "localField": "_id",
+            "foreignField": "_id",
+            "as": "producto"
+        }},
+        {"$unwind": "$producto"},
+        {"$project": {
+            "_id": 0,
+            "producto_id": "$_id",
+            "producto": "$producto.titulo",
+            "stock_total": 1
+        }}
+    ])
+    return fix_objectids(list(db.producto_variedads.aggregate(pipeline)))
+
+def productos_recien_agregados(limit=10, tenant=None):
+    match = {}
+    if tenant:
+        try:
+            match["tenant"] = ObjectId(tenant)
+        except Exception:
+            match["tenant"] = tenant
+    cursor = db.productos.find(match).sort("createdAT", -1).limit(limit)
+    return fix_objectids(list(cursor))
+
+def productos_sobre_stock(umbral=100, tenant=None):
+    pipeline = []
+    match = {}
+    if tenant:
+        try:
+            match["tenant"] = ObjectId(tenant)
+        except Exception:
+            match["tenant"] = tenant
+    if match:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$group": {"_id": "$producto", "stock_total": {"$sum": "$cantidad"}}},
+        {"$match": {"stock_total": {"$gt": umbral}}},
+        {"$lookup": {
+            "from": "productos",
+            "localField": "_id",
+            "foreignField": "_id",
+            "as": "producto"
+        }},
+        {"$unwind": "$producto"},
+        {"$project": {
+            "_id": 0,
+            "producto_id": "$_id",
+            "producto": "$producto.titulo",
+            "stock_total": 1
+        }}
+    ])
+    return fix_objectids(list(db.producto_variedads.aggregate(pipeline)))
