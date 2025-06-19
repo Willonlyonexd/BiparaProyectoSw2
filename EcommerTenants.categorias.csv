@@ -1,0 +1,25 @@
+_id,titulo,slug,genero,subcategorias[0],subcategorias[1],subcategorias[2],subcategorias[3],subcategorias[4],subcategorias[5],subcategorias[6],estado,createdAT,tenant
+6852dcdc42ef544cc771d4fe,Maletas y Mochilas M,maletas-y-mochilas-m,Masculino,Maletas de Viaje,Mochilas Escolares,Mochilas para Portátil,Mochilas Urbanas,Bolsos Deportivos,Riñoneras,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d4ff,Maletas y Mochilas F,maletas-y-mochilas-f,Femenino,Maletas de Viaje,Mochilas Escolares,Mochilas para Portátil,Mochilas Urbanas,Bolsos Deportivos,Riñoneras,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d500,Maletas y Mochilas (niño),maletas-y-mochilas-nino,Niños,Mochilas Escolares,Mochilas para Niños,Loncheras,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d501,Maletas y Mochilas (niña),maletas-y-mochilas-nina,Niñas,Mochilas Escolares,Mochilas para Niños,Loncheras,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d502,Accesorios M,accesorios-m,Masculino,Billeteras,Estuches,Portadocumentos,Neceseres,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d503,Accesorios F,accesorios-f,Femenino,Billeteras,Estuches,Bolsos de Mano,Neceseres,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d504,Accesorios (niño),accesorios-nino,Niños,Estuches,Loncheras,Cartucheras,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d505,Accesorios (niña),accesorios-nina,Niñas,Estuches,Loncheras,Cartucheras,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d506,Ropa M,ropa-m,Masculino,Camisetas,Pantalones,Chaquetas,Sudaderas,Gorras y Sombreros,Ropa Deportiva,Ropa Interior,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d507,Ropa F,ropa-f,Femenino,Camisetas,Pantalones,Chaquetas,Sudaderas,Gorras y Sombreros,Ropa Deportiva,Ropa Interior,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d508,Ropa (niño),ropa-nino,Niños,Camisetas,Pantalones,Chaquetas,Sudaderas,Gorras y Sombreros,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d509,Ropa (niña),ropa-nina,Niñas,Camisetas,Pantalones,Chaquetas,Sudaderas,Gorras y Sombreros,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d50a,Calzado M,calzado-m,Masculino,Zapatillas Casual,Zapatillas Deportivas,Sandalias,Botas,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d50b,Calzado F,calzado-f,Femenino,Zapatillas Casual,Zapatillas Deportivas,Sandalias,Botas,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d50c,Calzado (niño),calzado-nino,Niños,Zapatillas Casual,Zapatillas Deportivas,Sandalias,Botas,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d50d,Calzado (niña),calzado-nina,Niñas,Zapatillas Casual,Zapatillas Deportivas,Sandalias,Botas,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d50e,Tecnología M,tecnologia-m,Masculino,Audífonos,Cargadores,Powerbanks,Accesorios para Celular,Gadgets,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d50f,Tecnología F,tecnologia-f,Femenino,Audífonos,Cargadores,Powerbanks,Accesorios para Celular,Gadgets,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d510,Tecnología (niño),tecnologia-nino,Niños,Audífonos,Accesorios para Celular,Gadgets Infantiles,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d511,Tecnología (niña),tecnologia-nina,Niñas,Audífonos,Accesorios para Celular,Gadgets Infantiles,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d512,Colecciones Especiales M,colecciones-especiales-m,Masculino,Eco-friendly,Colecciones Limitadas,Premium,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d513,Colecciones Especiales F,colecciones-especiales-f,Femenino,Eco-friendly,Colecciones Limitadas,Premium,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d514,Colecciones Especiales (niño),colecciones-especiales-nino,Niños,Personajes,Colecciones Infantiles,,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
+6852dcdc42ef544cc771d515,Colecciones Especiales (niña),colecciones-especiales-nina,Niñas,Personajes,Colecciones Infantiles,,,,,,true,2025-04-17T23:12:34.000Z,6852dbf5c4a6f8d1a81074f6
